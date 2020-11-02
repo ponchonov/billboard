@@ -119,6 +119,7 @@
                         <outlet property="movieRate" destination="PdY-ex-p3Y" id="mtE-Dh-dQu"/>
                         <outlet property="movieTime" destination="62R-SU-vZx" id="qLx-Fo-fZp"/>
                         <outlet property="movieYear" destination="Svh-Tq-eXg" id="L72-Hr-jw1"/>
+                        <outlet property="tableView" destination="hen-L6-08T" id="tGM-SM-SFw"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="atl-Hm-xg0" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>

@@ -98,9 +98,9 @@ class API: NSObject {
 					let responseObject =  try decoder.decode(Response.self, from: data)
 					
 					
-					let characters = responseObject.results
+					let results = responseObject.results
 					
-					completion(characters, nil)
+					completion(results, nil)
 				} catch let e {
 					self.currentPage = self.currentPage - 1
 					completion([], e)
@@ -108,4 +108,42 @@ class API: NSObject {
 			}
 		}
 	}
+	
+	public func getTrailers(movieId:Int, completion: @escaping ([Video],_ error: Error?) -> Void) {
+		guard let url = URL(string: "\(baseURL)/3/movie/\(movieId)/videos")
+		else {
+			let error = NSError(domain: "", code: -100, userInfo: [:])
+			completion([], error)
+			return
+		}
+		
+		
+		var request = mutableRequest(url: url)
+		request.httpMethod = "GET"
+		
+		let parameters = [
+			"api_key": apiKey
+		]
+		
+		apiCallWith(request: request, parameters: parameters) { (data, response, error) in
+			
+			if (error != nil) {
+				print(error ?? " ")
+				completion([], error)
+			} else {
+				do {
+					let decoder = JSONDecoder()
+					guard let data = data else {return}
+					let responseObject =  try decoder.decode(ResponseTrailer.self, from: data)
+					
+					let results = responseObject.results
+					
+					completion(results, nil)
+				} catch let e {
+					completion([], e)
+				}
+			}
+		}
+	}
+	
 }
