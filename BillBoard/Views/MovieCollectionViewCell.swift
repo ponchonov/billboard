@@ -9,9 +9,8 @@ import UIKit
 
 class MovieCollectionViewCell: UICollectionViewCell {
 	
-	lazy var movieImage:UIImageView = {
-		let m = UIImageView(frame: .zero)
-		m.translatesAutoresizingMaskIntoConstraints = false
+	lazy var movieImage:MovieBillboardImageView = {
+		let m = MovieBillboardImageView()
 
 		return m
 	}()
@@ -33,20 +32,7 @@ class MovieCollectionViewCell: UICollectionViewCell {
 	
 	func setUpData() {
 		guard let movie = self.movie else {return}
-		
-		DispatchQueue.global(qos: .background).async {
-			guard let url = URL(string: "https://image.tmdb.org/t/p/w500\(movie.poster_path )") else {
-				return
-			}
-			if let data = try? Data(contentsOf: url) {
-				
-				DispatchQueue.main.async {
-					
-					let image = UIImage(data: data)
-					self.movieImage.image = image
-				}
-			}
-		}
+		movieImage.downloadImageFrom(thumbnailPath: movie.poster_path, imageMode: .scaleToFill)
 	}
 	
 	func setUpView()  {
