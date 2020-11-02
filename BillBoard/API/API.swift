@@ -17,6 +17,7 @@ class API: NSObject {
 	}
 	
 	var currentPage = 1
+	var language = "en"
 	
 	private func mutableRequest(url:URL) -> URLRequest {
 		
@@ -82,7 +83,7 @@ class API: NSObject {
 		let parameters = [
 			"api_key": apiKey,
 			"page":"\(currentPage)",
-			"language": "en"
+			"language": language
 		]
 		
 		apiCallWith(request: request, parameters: parameters) { (data, response, error) in

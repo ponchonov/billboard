@@ -12,6 +12,7 @@ class HomeViewController: UIViewController {
 	var movies:[Movie] = [Movie]()
 	var isDataLoading = true
 	var refreshControl = UIRefreshControl()
+	var currentLanguage = "En"
 	
 	lazy var collectionView:UICollectionView = {
 		let l = UICollectionViewFlowLayout()
@@ -44,6 +45,19 @@ class HomeViewController: UIViewController {
 		getInitialData()
 		self.title = "Pop Movies"
 		
+		self.navigationItem.rightBarButtonItem = UIBarButtonItem.init(title: "EN", style: .done, target: self, action: #selector(self.changeLanguage(sender:)))
+
+		
+	}
+	
+	@objc func changeLanguage(sender: UIBarButtonItem) {
+		if (API.shared.language == "en") {
+			API.shared.language = "es"
+		} else {
+			API.shared.language = "en"
+		}
+		self.getInitialData()
+		self.navigationItem.rightBarButtonItem?.title = API.shared.language.uppercased()
 	}
 	
 	override func viewDidAppear(_ animated: Bool) {
