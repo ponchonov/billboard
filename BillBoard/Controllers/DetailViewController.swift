@@ -9,21 +9,31 @@ import UIKit
 
 class DetailViewController: UIViewController {
 
-    override func viewDidLoad() {
+	@IBOutlet weak var imageView: UIView!
+	@IBOutlet weak var movieYear: UILabel!
+	@IBOutlet weak var movieTime: UILabel!
+	@IBOutlet weak var movieRate: UILabel!
+	@IBOutlet weak var movieOverView: UITextView!
+	
+	var movie:Movie?
+	
+	override func viewDidLoad() {
         super.viewDidLoad()
-
+		setupView()
         // Do any additional setup after loading the view.
     }
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
+	func setupView()  {
+		let posterImage = MovieBillboardImageView(frame: imageView.bounds)
+		
+		imageView.addSubview(posterImage)
+		
+		guard let movie = movie else {return}
+		
+		posterImage.downloadImageFrom(thumbnailPath: movie.poster_path, imageMode: .scaleToFill)
+		movieYear.text = movie.release_date
+		movieRate.text = "\(movie.vote_average)/10"
+		movieOverView.text = movie.overview
+		self.title = movie.original_title
+	}
 }

@@ -87,7 +87,6 @@ class HomeViewController: UIViewController {
 		self.refreshControl.addTarget(self, action: #selector(loadData), for: .valueChanged)
 		self.collectionView.addSubview(refreshControl)
 		
-		
 		[collectionView].forEach(view.addSubview)
 		
 		NSLayoutConstraint.activate([
@@ -99,7 +98,7 @@ class HomeViewController: UIViewController {
 	}
 	
 	func getInitialData()  {
-		API.shared.getMovies(completion: { (movies, error) in
+		API.shared.getMovies(completion: { [unowned self] (movies, error)  in
 			self.movies = movies
 			DispatchQueue.main.async {
 				self.collectionView.reloadData()
@@ -124,7 +123,7 @@ class HomeViewController: UIViewController {
 			guard !self.isDataLoading else { return }
 			self.isDataLoading = true
 			
-			API.shared.getMovies(nextPage: true) { (movies, error) in
+			API.shared.getMovies(nextPage: true) { [unowned self] (movies, error) in
 				//				self.movies.append(contentsOf: movies)
 				DispatchQueue.main.async {
 					for i in 0 ..< movies.count {
@@ -165,6 +164,12 @@ extension HomeViewController:UICollectionViewDelegate {
 	
 	func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
 		let movie = movies[indexPath.row]
-		//show  movie detail implementation
+		
+		let storyboard = UIStoryboard(name: "Main", bundle: nil)
+		let vc = storyboard.instantiateViewController(withIdentifier: "DetailViewController") as! DetailViewController
+		
+		vc.movie = movie
+		
+		self.show(vc, sender: nil)
 	}
 }

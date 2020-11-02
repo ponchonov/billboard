@@ -44,7 +44,14 @@ class MovieBillboardImageView: UIView {
 	
 	init() {
 		super.init(frame: .zero)
+		self.translatesAutoresizingMaskIntoConstraints = false
 		setUpView()
+	}
+	
+	override init(frame: CGRect) {
+		super.init(frame: frame)
+		setUpView()
+		
 	}
 	
 	required init?(coder: NSCoder) {
@@ -52,7 +59,6 @@ class MovieBillboardImageView: UIView {
 	}
 	
 	func setUpView() {
-		self.translatesAutoresizingMaskIntoConstraints = false
 		[movieBillboardImageView, activityIndicator].forEach(self.addSubview)
 		
 		NSLayoutConstraint.activate([
