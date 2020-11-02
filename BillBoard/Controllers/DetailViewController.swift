@@ -10,8 +10,7 @@ import UIKit
 class DetailViewController: UIViewController {
 
 	@IBOutlet weak var imageView: UIView!
-	@IBOutlet weak var movieYear: UILabel!
-	@IBOutlet weak var movieTime: UILabel!
+	@IBOutlet weak var releaseDate: UILabel!
 	@IBOutlet weak var movieRate: UILabel!
 	@IBOutlet weak var movieOverView: UITextView!
 	
@@ -40,7 +39,7 @@ class DetailViewController: UIViewController {
 		guard let movie = movie else {return}
 		
 		posterImage.downloadImageFrom(thumbnailPath: movie.poster_path, imageMode: .scaleToFill)
-		movieYear.text = movie.release_date
+		releaseDate.text = movie.release_date
 		movieRate.text = "\(movie.vote_average)/10"
 		movieOverView.text = movie.overview
 		self.title = movie.original_title

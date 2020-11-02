@@ -12,12 +12,13 @@ class API: NSObject {
 	
 	var baseURL = "https://api.themoviedb.org"
 	var apiKey = "663bdcca49cb692e08017d6dd8b68a64"
+	var currentPage = 1
+	var language = "en"
+	var currentFilter = "popular"
+	
 	override init() {
 		super.init()
 	}
-	
-	var currentPage = 1
-	var language = "en"
 	
 	private func mutableRequest(url:URL) -> URLRequest {
 		
@@ -25,7 +26,7 @@ class API: NSObject {
 			"accept": "application/json",
 			"content-type": "application/json",
 		]
-		var request = URLRequest(url: url, cachePolicy: .useProtocolCachePolicy, timeoutInterval: 10)
+		var request = URLRequest(url: url, cachePolicy: .useProtocolCachePolicy, timeoutInterval: 20)
 		
 		request.allHTTPHeaderFields = headers
 		
@@ -64,13 +65,13 @@ class API: NSObject {
 	
 	public func getMovies( nextPage:Bool = false, completion: @escaping ([Movie],_ error: Error?) -> Void) {
 		if currentPage < 0 {
-			currentPage = 0
+			currentPage = 1
 		}
-		guard let url = URL(string: "\(baseURL)/3/movie/popular")
-			else {
-				let error = NSError(domain: "", code: -100, userInfo: [:])
-				completion([], error)
-				return
+		guard let url = URL(string: "\(baseURL)/3/movie/\(currentFilter)")
+		else {
+			let error = NSError(domain: "", code: -100, userInfo: [:])
+			completion([], error)
+			return
 		}
 		
 		if nextPage {

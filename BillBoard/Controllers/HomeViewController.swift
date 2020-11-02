@@ -12,8 +12,7 @@ class HomeViewController: UIViewController {
 	var movies:[Movie] = [Movie]()
 	var isDataLoading = true
 	var refreshControl = UIRefreshControl()
-	var currentLanguage = "En"
-	
+
 	lazy var collectionView:UICollectionView = {
 		let l = UICollectionViewFlowLayout()
 		var itemSize = CGSize(width: UIScreen.main.bounds.width/2, height: 300)
@@ -45,9 +44,10 @@ class HomeViewController: UIViewController {
 		getInitialData()
 		self.title = "Pop Movies"
 		
+		//here we can also use the locate to know the device language but for now to see faster I used this implementation
 		self.navigationItem.rightBarButtonItem = UIBarButtonItem.init(title: "EN", style: .done, target: self, action: #selector(self.changeLanguage(sender:)))
 
-		
+		self.navigationItem.leftBarButtonItem = UIBarButtonItem.init(title: "Popular", style: .done, target: self, action: #selector(self.changeFilter(sender:)))
 	}
 	
 	@objc func changeLanguage(sender: UIBarButtonItem) {
@@ -60,6 +60,35 @@ class HomeViewController: UIViewController {
 		self.navigationItem.rightBarButtonItem?.title = API.shared.language.uppercased()
 	}
 	
+	@objc func changeFilter(sender: UIBarButtonItem) {
+			
+		
+		let alert = UIAlertController(title: "Filter", message: "Select Filter", preferredStyle: UIDevice.current.userInterfaceIdiom == .pad ? .alert:.actionSheet)
+		
+		alert.addAction(UIAlertAction(title: "Popular", style: .default, handler: { (action) in
+			API.shared.currentFilter = "popular"
+			self.getInitialData()
+			self.navigationItem.leftBarButtonItem?.title = action.title
+		}))
+		
+		alert.addAction(UIAlertAction(title: "Now Playing", style: .default, handler: { (action) in
+			API.shared.currentFilter = "now_playing"
+			self.getInitialData()
+			self.navigationItem.leftBarButtonItem?.title = action.title
+		}))
+		
+		alert.addAction(UIAlertAction(title: "Upcoming", style: .default, handler: { (action) in
+			API.shared.currentFilter = "upcoming"
+			self.getInitialData()
+			self.navigationItem.leftBarButtonItem?.title = action.title
+		}))
+		
+		self.present(alert, animated: true, completion: nil)
+		
+	}
+	
+	
+	
 	override func viewDidAppear(_ animated: Bool) {
 		self.navigationController?.navigationBar.prefersLargeTitles = true
 		setupLayout(width: UIScreen.main.bounds.width)
@@ -71,11 +100,16 @@ class HomeViewController: UIViewController {
 		var numberOfColumns:CGFloat = 2
 		if UIDevice.current.userInterfaceIdiom == .pad {
 			numberOfColumns = 3
+			//only in case we want to allow landscape
 			if (UIDevice.current.orientation.isLandscape ){
 				numberOfColumns = 5
 			}
+			itemSize = CGSize(width: width/numberOfColumns, height: 400)
+
+		} else {
+			itemSize = CGSize(width: width/numberOfColumns, height: 300)
 		}
-		itemSize = CGSize(width: width/numberOfColumns, height: 300)
+		
 		
 		let l = UICollectionViewFlowLayout()
 		
@@ -138,7 +172,6 @@ class HomeViewController: UIViewController {
 			self.isDataLoading = true
 			
 			API.shared.getMovies(nextPage: true) { [unowned self] (movies, error) in
-				//				self.movies.append(contentsOf: movies)
 				DispatchQueue.main.async {
 					for i in 0 ..< movies.count {
 						DispatchQueue.main.asyncAfter(deadline: .now() + Double(i) * 0.25) {
